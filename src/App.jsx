@@ -11,7 +11,7 @@ function App() {
   ]);
 
   const errors = useMemo(() => validatePairs(pairs), [pairs]);
-  
+
   const calculation = useMemo(() => {
     if (errors.length > 0) return null;
     return calculateFlexibility(pairs, isFriday);
@@ -21,16 +21,16 @@ function App() {
     <div className="app-container">
       <header>
         <h1>FlexCal</h1>
-        <p>Calculadora de Flexibilidad de Jornada</p>
+        <p>Esta herramienta permite calcular tu jornada diaria a partir de los fichajes de entrada y salida. Introduce tus horas y la aplicación te indicará cuánto has trabajado, tu saldo de flexibilidad y la hora máxima a la que puedes salir sin generar horas extra.</p>
       </header>
-      
+
       <main>
         <div className="left-panel">
-          <TimeEntryForm 
-            pairs={pairs} 
-            setPairs={setPairs} 
-            isFriday={isFriday} 
-            setIsFriday={setIsFriday} 
+          <TimeEntryForm
+            pairs={pairs}
+            setPairs={setPairs}
+            isFriday={isFriday}
+            setIsFriday={setIsFriday}
           />
           {errors.length > 0 && (
             <div className="error-messages">
@@ -40,7 +40,7 @@ function App() {
             </div>
           )}
         </div>
-        
+
         <div className="right-panel">
           <ResultsPanel calculation={calculation} />
         </div>
