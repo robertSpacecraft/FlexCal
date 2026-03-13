@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TimeEntryForm({ pairs, setPairs }) {
+export default function TimeEntryForm({ pairs, setPairs, isFriday, setIsFriday }) {
 
   const handleTimeChange = (index, field, value) => {
     const newPairs = [...pairs];
@@ -22,7 +22,20 @@ export default function TimeEntryForm({ pairs, setPairs }) {
 
   return (
     <div className="card form-container">
-      <h2>Fichajes</h2>
+      <div className="form-header">
+        <h2>Fichajes</h2>
+        <div className={`friday-selector ${isFriday ? 'active' : ''}`}>
+          <label className="switch">
+            <input 
+              type="checkbox" 
+              checked={isFriday} 
+              onChange={(e) => setIsFriday(e.target.checked)} 
+            />
+            <span className="slider round"></span>
+          </label>
+          <span className="friday-text">¡Es viernes!</span>
+        </div>
+      </div>
       <div className="pairs-list">
         {pairs.map((pair, index) => (
           <div key={index} className="time-pair">

@@ -4,6 +4,7 @@ import ResultsPanel from './components/ResultsPanel'
 import { calculateFlexibility, validatePairs } from './utils/timeUtils'
 
 function App() {
+  const [isFriday, setIsFriday] = useState(false);
   const [pairs, setPairs] = useState([
     { in: '', out: '' },
     { in: '', out: '' }
@@ -13,8 +14,8 @@ function App() {
   
   const calculation = useMemo(() => {
     if (errors.length > 0) return null;
-    return calculateFlexibility(pairs);
-  }, [pairs, errors]);
+    return calculateFlexibility(pairs, isFriday);
+  }, [pairs, errors, isFriday]);
 
   return (
     <div className="app-container">
@@ -25,7 +26,12 @@ function App() {
       
       <main>
         <div className="left-panel">
-          <TimeEntryForm pairs={pairs} setPairs={setPairs} />
+          <TimeEntryForm 
+            pairs={pairs} 
+            setPairs={setPairs} 
+            isFriday={isFriday} 
+            setIsFriday={setIsFriday} 
+          />
           {errors.length > 0 && (
             <div className="error-messages">
               {errors.map((err, i) => (

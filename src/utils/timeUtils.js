@@ -1,6 +1,6 @@
-export const TARGET_MINUTES = 510; // 8h 30m
-export const MIN_MINUTES = 450; // 7h 30m
-export const MAX_MINUTES = 570; // 9h 30m
+export const getTargetMinutes = (isFriday) => isFriday ? 360 : 510; // 6h vs 8h 30m
+export const getMinMinutes = (isFriday) => getTargetMinutes(isFriday) - 60; // -1h
+export const getMaxMinutes = (isFriday) => getTargetMinutes(isFriday) + 60; // +1h
 
 export function timeToMinutes(timeStr) {
   if (!timeStr) return 0;
@@ -63,8 +63,14 @@ export function validatePairs(pairs) {
   return errors;
 }
 
-export function calculateFlexibility(pairs) {
+export function calculateFlexibility(pairs, isFriday = false) {
+  const targetMinutes = getTargetMinutes(isFriday);
+  const minMinutes = getMinMinutes(isFriday);
+  const maxMinutes = getMaxMinutes(isFriday);
+
   const result = {
+    isFriday,
+    targetMinutes,
     isPredictive: false,
     workedAccumulated: 0,
     remainingToTarget: 0,
@@ -114,21 +120,21 @@ export function calculateFlexibility(pairs) {
     
     // Los cálculos predictivos se siguen haciendo en base al inicio del último tramo
     // (es decir, el tiempo restante desde que entró última vez)
-    result.remainingToTarget = Math.max(0, TARGET_MINUTES - workedMins);
+    result.remainingToTarget = Math.max(0, targetMinutes - workedMins);
     result.predictiveExitTarget = currentInMins + result.remainingToTarget;
     
-    result.remainingToMax = Math.max(0, MAX_MINUTES - workedMins);
+    result.remainingToMax = Math.max(0, maxMinutes - workedMins);
     result.predictiveExitMax = currentInMins + result.remainingToMax;
   } else {
     result.totalWorked = workedMins;
-    result.balance = workedMins - TARGET_MINUTES;
+    result.balance = workedMins - targetMinutes;
 
-    if (workedMins > MAX_MINUTES) {
+    if (workedMins > maxMinutes) {
       result.state = 'EXCESS_POSITIVE';
-      result.extraTime = workedMins - MAX_MINUTES;
-    } else if (workedMins < MIN_MINUTES) {
+      result.extraTime = workedMins - maxMinutes;
+    } else if (workedMins < minMinutes) {
       result.state = 'DEFECT_NEGATIVE';
-      result.owedTime = MIN_MINUTES - workedMins;
+      result.owedTime = minMinutes - workedMins;
     } else {
       result.state = 'WITHIN_MARGIN';
     }
